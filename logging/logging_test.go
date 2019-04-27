@@ -9,6 +9,8 @@ import (
 func TestLogging(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Logging")
 }

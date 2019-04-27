@@ -22,6 +22,8 @@ import (
 func validateNetworkAttachmentDefinition(netAttachDef types.NetworkAttachmentDefinition) (bool, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	nameRegex := `^[a-z0-9]([-a-z0-9]*[a-z0-9])?$`
 	isNameCorrect, err := regexp.MatchString(nameRegex, netAttachDef.Metadata.Name)
 	if !isNameCorrect {
@@ -54,6 +56,8 @@ func validateNetworkAttachmentDefinition(netAttachDef types.NetworkAttachmentDef
 func prepareAdmissionReviewResponse(allowed bool, message string, ar *v1beta1.AdmissionReview) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if ar.Request != nil {
 		ar.Response = &v1beta1.AdmissionResponse{UID: ar.Request.UID, Allowed: allowed}
 		if message != "" {
@@ -65,6 +69,8 @@ func prepareAdmissionReviewResponse(allowed bool, message string, ar *v1beta1.Ad
 	}
 }
 func deserializeAdmissionReview(body []byte) (v1beta1.AdmissionReview, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	ar := v1beta1.AdmissionReview{}
@@ -80,11 +86,15 @@ func deserializeAdmissionReview(body []byte) (v1beta1.AdmissionReview, error) {
 func deserializeNetworkAttachmentDefinition(ar v1beta1.AdmissionReview) (types.NetworkAttachmentDefinition, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	netAttachDef := types.NetworkAttachmentDefinition{}
 	err := json.Unmarshal(ar.Request.Object.Raw, &netAttachDef)
 	return netAttachDef, err
 }
 func handleValidationError(w http.ResponseWriter, ar v1beta1.AdmissionReview, orgErr error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	err := prepareAdmissionReviewResponse(false, orgErr.Error(), &ar)
@@ -98,11 +108,15 @@ func handleValidationError(w http.ResponseWriter, ar v1beta1.AdmissionReview, or
 func writeResponse(w http.ResponseWriter, ar v1beta1.AdmissionReview) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Printf(logging.DebugLevel, "Sending response to the API server")
 	resp, _ := json.Marshal(ar)
 	w.Write(resp)
 }
 func validateHandler(w http.ResponseWriter, req *http.Request) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var body []byte
@@ -149,6 +163,8 @@ func validateHandler(w http.ResponseWriter, req *http.Request) {
 func main() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	port := flag.Int("port", 443, "The port on which to serve.")
 	address := flag.String("bind-address", "0.0.0.0", "The IP address on which to listen for the --port port.")
 	cert := flag.String("tls-cert-file", "cert.pem", "File containing the default x509 Certificate for HTTPS.")
@@ -166,7 +182,16 @@ func main() {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

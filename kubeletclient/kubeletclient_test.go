@@ -28,6 +28,8 @@ type fakeResourceServer struct{ server *grpc.Server }
 func (m *fakeResourceServer) List(ctx context.Context, req *podresourcesapi.ListPodResourcesRequest) (*podresourcesapi.ListPodResourcesResponse, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	podName := "pod-name"
 	podNamespace := "pod-namespace"
 	containerName := "container-name"
@@ -38,10 +40,14 @@ func (m *fakeResourceServer) List(ctx context.Context, req *podresourcesapi.List
 func TestKubeletclient(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Kubeletclient Suite")
 }
 func setUp() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	tempSocketDir, err := ioutil.TempDir("", "kubelet-resource-client")
@@ -64,6 +70,8 @@ func setUp() error {
 	return nil
 }
 func tearDown(path string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if fakeServer != nil {

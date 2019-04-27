@@ -21,14 +21,20 @@ type fakeCheckpoint struct{ fileName string }
 func (fc *fakeCheckpoint) WriteToFile(inBytes []byte) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return ioutil.WriteFile(fc.fileName, inBytes, 0600)
 }
 func (fc *fakeCheckpoint) DeleteFile() error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return os.Remove(fc.fileName)
 }
 func TestCheckpoint(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)

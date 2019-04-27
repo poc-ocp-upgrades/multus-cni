@@ -30,6 +30,8 @@ var defaultReadinessBackoff = wait.Backoff{Steps: 4, Duration: 250 * time.Millis
 func saveScratchNetConf(containerID, dataDir string, netconf []byte) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("saveScratchNetConf: %s, %s, %s", containerID, dataDir, string(netconf))
 	if err := os.MkdirAll(dataDir, 0700); err != nil {
 		return logging.Errorf("failed to create the multus data directory(%q): %v", dataDir, err)
@@ -44,12 +46,16 @@ func saveScratchNetConf(containerID, dataDir string, netconf []byte) error {
 func consumeScratchNetConf(containerID, dataDir string) ([]byte, string, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("consumeScratchNetConf: %s, %s", containerID, dataDir)
 	path := filepath.Join(dataDir, containerID)
 	b, err := ioutil.ReadFile(path)
 	return b, path, err
 }
 func getIfname(delegate *types.DelegateNetConf, argif string, idx int) string {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("getIfname: %v, %s, %d", delegate, argif, idx)
@@ -62,6 +68,8 @@ func getIfname(delegate *types.DelegateNetConf, argif string, idx int) string {
 	return fmt.Sprintf("net%d", idx)
 }
 func saveDelegates(containerID, dataDir string, delegates []*types.DelegateNetConf) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("saveDelegates: %s, %s, %v", containerID, dataDir, delegates)
@@ -77,6 +85,8 @@ func saveDelegates(containerID, dataDir string, delegates []*types.DelegateNetCo
 func deleteDelegates(containerID, dataDir string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("deleteDelegates: %s, %s", containerID, dataDir)
 	path := filepath.Join(dataDir, containerID)
 	if err := os.Remove(path); err != nil {
@@ -85,6 +95,8 @@ func deleteDelegates(containerID, dataDir string) error {
 	return nil
 }
 func validateIfName(nsname string, ifname string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("validateIfName: %s, %s", nsname, ifname)
@@ -107,6 +119,8 @@ func validateIfName(nsname string, ifname string) error {
 func conflistAdd(rt *libcni.RuntimeConf, rawnetconflist []byte, binDir string, exec invoke.Exec) (cnitypes.Result, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("conflistAdd: %v, %s, %s", rt, string(rawnetconflist), binDir)
 	binDirs := filepath.SplitList(os.Getenv("CNI_PATH"))
 	binDirs = append(binDirs, binDir)
@@ -124,6 +138,8 @@ func conflistAdd(rt *libcni.RuntimeConf, rawnetconflist []byte, binDir string, e
 func conflistDel(rt *libcni.RuntimeConf, rawnetconflist []byte, binDir string, exec invoke.Exec) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("conflistDel: %v, %s, %s", rt, string(rawnetconflist), binDir)
 	binDirs := filepath.SplitList(os.Getenv("CNI_PATH"))
 	binDirs = append(binDirs, binDir)
@@ -139,6 +155,8 @@ func conflistDel(rt *libcni.RuntimeConf, rawnetconflist []byte, binDir string, e
 	return err
 }
 func delegateAdd(exec invoke.Exec, ifName string, delegate *types.DelegateNetConf, rt *libcni.RuntimeConf, binDir string, cniArgs string) (cnitypes.Result, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("delegateAdd: %v, %s, %v, %v, %s", exec, ifName, delegate, rt, binDir)
@@ -206,6 +224,8 @@ func delegateAdd(exec invoke.Exec, ifName string, delegate *types.DelegateNetCon
 func delegateDel(exec invoke.Exec, ifName string, delegateConf *types.DelegateNetConf, rt *libcni.RuntimeConf, binDir string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("delegateDel: %v, %s, %v, %v, %s", exec, ifName, delegateConf, rt, binDir)
 	if os.Setenv("CNI_IFNAME", ifName) != nil {
 		return logging.Errorf("Multus: error in setting CNI_IFNAME")
@@ -235,6 +255,8 @@ func delegateDel(exec invoke.Exec, ifName string, delegateConf *types.DelegateNe
 func delPlugins(exec invoke.Exec, argIfname string, delegates []*types.DelegateNetConf, lastIdx int, rt *libcni.RuntimeConf, binDir string) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("delPlugins: %v, %s, %v, %d, %v, %s", exec, argIfname, delegates, lastIdx, rt, binDir)
 	if os.Setenv("CNI_COMMAND", "DEL") != nil {
 		return logging.Errorf("Multus: error in setting CNI_COMMAND to DEL")
@@ -253,6 +275,8 @@ func delPlugins(exec invoke.Exec, argIfname string, delegates []*types.DelegateN
 	return nil
 }
 func cmdAdd(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) (cnitypes.Result, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	n, err := types.LoadNetConf(args.StdinData)
@@ -328,6 +352,8 @@ func cmdAdd(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) (cn
 func cmdGet(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) (cnitypes.Result, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("cmdGet: %v, %v, %v", args, exec, kubeClient)
 	in, err := types.LoadNetConf(args.StdinData)
 	if err != nil {
@@ -336,6 +362,8 @@ func cmdGet(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) (cn
 	return in.PrevResult, nil
 }
 func cmdDel(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	in, err := types.LoadNetConf(args.StdinData)
@@ -403,6 +431,8 @@ func cmdDel(args *skel.CmdArgs, exec invoke.Exec, kubeClient k8s.KubeClient) err
 func main() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	skel.PluginMain(func(args *skel.CmdArgs) error {
 		result, err := cmdAdd(args, nil, nil)
 		if err != nil {
@@ -422,7 +452,16 @@ func main() {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

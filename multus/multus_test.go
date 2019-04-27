@@ -23,6 +23,8 @@ import (
 func TestMultus(t *testing.T) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "multus")
 }
@@ -44,9 +46,13 @@ type fakeExec struct {
 func (f *fakeExec) addPlugin(expectedEnv []string, expectedIfname, expectedConf string, result *types020.Result, err error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	f.plugins = append(f.plugins, &fakePlugin{expectedEnv: expectedEnv, expectedConf: expectedConf, expectedIfname: expectedIfname, result: result, err: err})
 }
 func matchArray(a1, a2 []string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	Expect(len(a1)).To(Equal(len(a2)))
@@ -64,6 +70,8 @@ func matchArray(a1, a2 []string) {
 func gatherCNIEnv() []string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	filtered := make([]string, 0)
 	for _, env := range os.Environ() {
 		if strings.HasPrefix(env, "CNI_") {
@@ -73,6 +81,8 @@ func gatherCNIEnv() []string {
 	return filtered
 }
 func (f *fakeExec) ExecPlugin(pluginPath string, stdinData []byte, environ []string) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cmd := os.Getenv("CNI_COMMAND")
@@ -111,6 +121,8 @@ func (f *fakeExec) ExecPlugin(pluginPath string, stdinData []byte, environ []str
 	return resultJSON, nil
 }
 func (f *fakeExec) FindInPath(plugin string, paths []string) (string, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	Expect(len(paths)).To(BeNumerically(">", 0))

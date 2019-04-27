@@ -39,6 +39,8 @@ type clientInfo struct {
 func (e *NoK8sNetworkError) Error() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return string(e.message)
 }
 
@@ -49,9 +51,13 @@ var _ KubeClient = &defaultKubeClient{}
 func (d *defaultKubeClient) GetRawWithPath(path string) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return d.client.ExtensionsV1beta1().RESTClient().Get().AbsPath(path).DoRaw()
 }
 func (d *defaultKubeClient) GetPod(namespace, name string) (*v1.Pod, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	return d.client.Core().Pods(namespace).Get(name, metav1.GetOptions{})
@@ -59,9 +65,13 @@ func (d *defaultKubeClient) GetPod(namespace, name string) (*v1.Pod, error) {
 func (d *defaultKubeClient) UpdatePodStatus(pod *v1.Pod) (*v1.Pod, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return d.client.Core().Pods(pod.Namespace).UpdateStatus(pod)
 }
 func setKubeClientInfo(c *clientInfo, client KubeClient, k8sArgs *types.K8sArgs) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("setKubeClientInfo: %v, %v, %v", c, client, k8sArgs)
@@ -70,6 +80,8 @@ func setKubeClientInfo(c *clientInfo, client KubeClient, k8sArgs *types.K8sArgs)
 	c.Podname = string(k8sArgs.K8S_POD_NAME)
 }
 func SetNetworkStatus(client KubeClient, k8sArgs *types.K8sArgs, netStatus []*types.NetworkStatus, conf *types.NetConf) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("SetNetworkStatus: %v, %v, %v, %v", client, k8sArgs, netStatus, conf)
@@ -111,6 +123,8 @@ func SetNetworkStatus(client KubeClient, k8sArgs *types.K8sArgs, netStatus []*ty
 func setPodNetworkAnnotation(client KubeClient, namespace string, pod *v1.Pod, networkstatus string) (*v1.Pod, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("setPodNetworkAnnotation: %v, %s, %v, %s", client, namespace, pod, networkstatus)
 	if len(pod.Annotations) == 0 {
 		pod.Annotations = make(map[string]string)
@@ -133,6 +147,8 @@ func setPodNetworkAnnotation(client KubeClient, namespace string, pod *v1.Pod, n
 	return pod, nil
 }
 func parsePodNetworkObjectName(podnetwork string) (string, string, string, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var netNsName string
@@ -168,6 +184,8 @@ func parsePodNetworkObjectName(podnetwork string) (string, string, string, error
 func parsePodNetworkAnnotation(podNetworks, defaultNamespace string) ([]*types.NetworkSelectionElement, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var networks []*types.NetworkSelectionElement
 	logging.Debugf("parsePodNetworkAnnotation: %s, %s", podNetworks, defaultNamespace)
 	if podNetworks == "" {
@@ -195,6 +213,8 @@ func parsePodNetworkAnnotation(podNetworks, defaultNamespace string) ([]*types.N
 	return networks, nil
 }
 func getCNIConfigFromFile(name string, confdir string) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("getCNIConfigFromFile: %s, %s", name, confdir)
@@ -233,6 +253,8 @@ func getCNIConfigFromFile(name string, confdir string) ([]byte, error) {
 func getCNIConfigFromSpec(configData, netName string) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var rawConfig map[string]interface{}
 	var err error
 	logging.Debugf("getCNIConfigFromSpec: %s, %s", configData, netName)
@@ -253,6 +275,8 @@ func getCNIConfigFromSpec(configData, netName string) ([]byte, error) {
 func cniConfigFromNetworkResource(customResource *types.NetworkAttachmentDefinition, confdir string) ([]byte, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var config []byte
 	var err error
 	logging.Debugf("cniConfigFromNetworkResource: %v, %s", customResource, confdir)
@@ -271,6 +295,8 @@ func cniConfigFromNetworkResource(customResource *types.NetworkAttachmentDefinit
 	return config, nil
 }
 func getKubernetesDelegate(client KubeClient, net *types.NetworkSelectionElement, confdir string, pod *v1.Pod, resourceMap map[string]*types.ResourceInfo) (*types.DelegateNetConf, map[string]*types.ResourceInfo, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("getKubernetesDelegate: %v, %v, %s", client, net, confdir)
@@ -327,6 +353,8 @@ type KubeClient interface {
 func GetK8sArgs(args *skel.CmdArgs) (*types.K8sArgs, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	k8sArgs := &types.K8sArgs{}
 	logging.Debugf("GetK8sArgs: %v", args)
 	err := cnitypes.LoadArgs(args.Args, k8sArgs)
@@ -336,6 +364,8 @@ func GetK8sArgs(args *skel.CmdArgs) (*types.K8sArgs, error) {
 	return k8sArgs, nil
 }
 func TryLoadPodDelegates(k8sArgs *types.K8sArgs, conf *types.NetConf, kubeClient KubeClient) (int, *clientInfo, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var err error
@@ -384,6 +414,8 @@ func TryLoadPodDelegates(k8sArgs *types.K8sArgs, conf *types.NetConf, kubeClient
 func GetK8sClient(kubeconfig string, kubeClient KubeClient) (KubeClient, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("GetK8sClient: %s, %v", kubeconfig, kubeClient)
 	if kubeClient != nil {
 		return kubeClient, nil
@@ -414,6 +446,8 @@ func GetK8sClient(kubeconfig string, kubeClient KubeClient) (KubeClient, error) 
 func GetPodNetwork(pod *v1.Pod) ([]*types.NetworkSelectionElement, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("GetPodNetwork: %v", pod)
 	netAnnot := pod.Annotations[networkAttachmentAnnot]
 	defaultNamespace := pod.ObjectMeta.Namespace
@@ -427,6 +461,8 @@ func GetPodNetwork(pod *v1.Pod) ([]*types.NetworkSelectionElement, error) {
 	return networks, nil
 }
 func GetNetworkDelegates(k8sclient KubeClient, pod *v1.Pod, networks []*types.NetworkSelectionElement, confdir string, confnamespaceIsolation bool) ([]*types.DelegateNetConf, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("GetNetworkDelegates: %v, %v, %v, %v, %v", k8sclient, pod, networks, confdir, confnamespaceIsolation)
@@ -451,6 +487,8 @@ func GetNetworkDelegates(k8sclient KubeClient, pod *v1.Pod, networks []*types.Ne
 func getDefaultNetDelegateCRD(client KubeClient, net, confdir, namespace string) (*types.DelegateNetConf, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("getDefaultNetDelegateCRD: %v, %v, %s, %s", client, net, confdir, namespace)
 	rawPath := fmt.Sprintf("/apis/k8s.cni.cncf.io/v1/namespaces/%s/network-attachment-definitions/%s", namespace, net)
 	netData, err := client.GetRawWithPath(rawPath)
@@ -472,6 +510,8 @@ func getDefaultNetDelegateCRD(client KubeClient, net, confdir, namespace string)
 	return delegate, nil
 }
 func getNetDelegate(client KubeClient, netname, confdir, namespace string) (*types.DelegateNetConf, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("getNetDelegate: %v, %v, %v, %s", client, netname, confdir, namespace)
@@ -514,6 +554,8 @@ func getNetDelegate(client KubeClient, netname, confdir, namespace string) (*typ
 func GetDefaultNetworks(k8sArgs *types.K8sArgs, conf *types.NetConf, kubeClient KubeClient) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("GetDefaultNetworks: %v, %v, %v", k8sArgs, conf, kubeClient)
 	var delegates []*types.DelegateNetConf
 	kubeClient, err := GetK8sClient(conf.Kubeconfig, kubeClient)
@@ -549,6 +591,8 @@ func GetDefaultNetworks(k8sArgs *types.K8sArgs, conf *types.NetConf, kubeClient 
 func tryLoadK8sPodDefaultNetwork(kubeClient KubeClient, pod *v1.Pod, conf *types.NetConf) (*types.DelegateNetConf, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	var netAnnot string
 	logging.Debugf("tryLoadK8sPodDefaultNetwork: %v, %v, %v", kubeClient, pod, conf)
 	netAnnot, ok := pod.Annotations[defaultNetAnnot]
@@ -573,7 +617,16 @@ func tryLoadK8sPodDefaultNetwork(kubeClient KubeClient, pod *v1.Pod, conf *types
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

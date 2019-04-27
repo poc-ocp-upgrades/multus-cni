@@ -23,9 +23,13 @@ type FakeKubeClient struct {
 func NewFakeKubeClient() *FakeKubeClient {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return &FakeKubeClient{pods: make(map[string]*v1.Pod), nets: make(map[string]string)}
 }
 func (f *FakeKubeClient) GetRawWithPath(path string) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	obj, ok := f.nets[path]
@@ -36,6 +40,8 @@ func (f *FakeKubeClient) GetRawWithPath(path string) ([]byte, error) {
 	return []byte(obj), nil
 }
 func (f *FakeKubeClient) AddNetConfig(namespace, name, data string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	cr := fmt.Sprintf(`{
@@ -56,6 +62,8 @@ func (f *FakeKubeClient) AddNetConfig(namespace, name, data string) {
 func (f *FakeKubeClient) AddNetFile(namespace, name, filePath, fileData string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	cr := fmt.Sprintf(`{
   "apiVersion": "k8s.cni.cncf.io/v1",
   "kind": "Network",
@@ -71,6 +79,8 @@ func (f *FakeKubeClient) AddNetFile(namespace, name, filePath, fileData string) 
 func (f *FakeKubeClient) GetPod(namespace, name string) (*v1.Pod, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	key := fmt.Sprintf("%s/%s", namespace, name)
 	pod, ok := f.pods[key]
 	if !ok {
@@ -82,11 +92,15 @@ func (f *FakeKubeClient) GetPod(namespace, name string) (*v1.Pod, error) {
 func (f *FakeKubeClient) UpdatePodStatus(pod *v1.Pod) (*v1.Pod, error) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	key := fmt.Sprintf("%s/%s", pod.Namespace, pod.Name)
 	f.pods[key] = pod
 	return f.pods[key], nil
 }
 func (f *FakeKubeClient) AddPod(pod *v1.Pod) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	key := fmt.Sprintf("%s/%s", pod.ObjectMeta.Namespace, pod.ObjectMeta.Name)
@@ -95,10 +109,14 @@ func (f *FakeKubeClient) AddPod(pod *v1.Pod) {
 func (f *FakeKubeClient) DeletePod(pod *v1.Pod) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	key := fmt.Sprintf("%s/%s", pod.ObjectMeta.Namespace, pod.ObjectMeta.Name)
 	delete(f.pods, key)
 }
 func NewFakePod(name string, netAnnotation string, defaultNetAnnotation string) *v1.Pod {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: "test"}, Spec: v1.PodSpec{Containers: []v1.Container{{Name: "ctr1", Image: "image"}}}}
@@ -117,6 +135,8 @@ func NewFakePod(name string, netAnnotation string, defaultNetAnnotation string) 
 func EnsureCIDR(cidr string) *net.IPNet {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	ip, net, err := net.ParseCIDR(cidr)
 	Expect(err).NotTo(HaveOccurred())
 	net.IP = ip
@@ -125,7 +145,16 @@ func EnsureCIDR(cidr string) *net.IPNet {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

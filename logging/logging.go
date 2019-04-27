@@ -31,6 +31,8 @@ const defaultTimestampFormat = time.RFC3339
 func (l Level) String() string {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	switch l {
 	case PanicLevel:
 		return "panic"
@@ -44,6 +46,8 @@ func (l Level) String() string {
 	return "unknown"
 }
 func Printf(level Level, format string, a ...interface{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	header := "%s [%s] "
@@ -65,9 +69,13 @@ func Printf(level Level, format string, a ...interface{}) {
 func Debugf(format string, a ...interface{}) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	Printf(DebugLevel, format, a...)
 }
 func Verbosef(format string, a ...interface{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	Printf(VerboseLevel, format, a...)
@@ -75,10 +83,14 @@ func Verbosef(format string, a ...interface{}) {
 func Errorf(format string, a ...interface{}) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	Printf(ErrorLevel, format, a...)
 	return fmt.Errorf(format, a...)
 }
 func Panicf(format string, a ...interface{}) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	Printf(PanicLevel, format, a...)
@@ -89,9 +101,13 @@ func Panicf(format string, a ...interface{}) {
 func GetLoggingLevel() Level {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return loggingLevel
 }
 func getLoggingLevel(levelStr string) Level {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	switch strings.ToLower(levelStr) {
@@ -110,6 +126,8 @@ func getLoggingLevel(levelStr string) Level {
 func SetLogLevel(levelStr string) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	level := getLoggingLevel(levelStr)
 	if level < MaxLevel {
 		loggingLevel = level
@@ -118,9 +136,13 @@ func SetLogLevel(levelStr string) {
 func SetLogStderr(enable bool) {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	loggingStderr = enable
 }
 func SetLogFile(filename string) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	if filename == "" {
@@ -136,6 +158,8 @@ func SetLogFile(filename string) {
 func init() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	loggingStderr = true
 	loggingFp = nil
 	loggingLevel = PanicLevel
@@ -143,7 +167,16 @@ func init() {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }

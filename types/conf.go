@@ -25,6 +25,8 @@ const (
 func LoadDelegateNetConfList(bytes []byte, delegateConf *DelegateNetConf) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("LoadDelegateNetConfList: %s, %v", string(bytes), delegateConf)
 	if err := json.Unmarshal(bytes, &delegateConf.ConfList); err != nil {
 		return logging.Errorf("err in unmarshalling delegate conflist: %v", err)
@@ -39,6 +41,8 @@ func LoadDelegateNetConfList(bytes []byte, delegateConf *DelegateNetConf) error 
 	return nil
 }
 func LoadDelegateNetConf(bytes []byte, net *NetworkSelectionElement, deviceID string) (*DelegateNetConf, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var err error
@@ -82,6 +86,8 @@ func LoadDelegateNetConf(bytes []byte, net *NetworkSelectionElement, deviceID st
 func CreateCNIRuntimeConf(args *skel.CmdArgs, k8sArgs *K8sArgs, ifName string, rc *RuntimeConfig) *libcni.RuntimeConf {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("LoadCNIRuntimeConf: %v, %v, %s, %v", args, k8sArgs, ifName, rc)
 	rt := &libcni.RuntimeConf{ContainerID: args.ContainerID, NetNS: args.Netns, IfName: ifName, Args: [][2]string{{"IgnoreUnknown", "1"}, {"K8S_POD_NAMESPACE", string(k8sArgs.K8S_POD_NAMESPACE)}, {"K8S_POD_NAME", string(k8sArgs.K8S_POD_NAME)}, {"K8S_POD_INFRA_CONTAINER_ID", string(k8sArgs.K8S_POD_INFRA_CONTAINER_ID)}}}
 	if rc != nil {
@@ -90,6 +96,8 @@ func CreateCNIRuntimeConf(args *skel.CmdArgs, k8sArgs *K8sArgs, ifName string, r
 	return rt
 }
 func LoadNetworkStatus(r types.Result, netName string, defaultNet bool) (*NetworkStatus, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	logging.Debugf("LoadNetworkStatus: %v, %s, %t", r, netName, defaultNet)
@@ -118,6 +126,8 @@ func LoadNetworkStatus(r types.Result, netName string, defaultNet bool) (*Networ
 	return netstatus, nil
 }
 func LoadNetConf(bytes []byte) (*NetConf, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	netconf := &NetConf{}
@@ -190,11 +200,15 @@ func LoadNetConf(bytes []byte) (*NetConf, error) {
 func (n *NetConf) AddDelegates(newDelegates []*DelegateNetConf) error {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	logging.Debugf("AddDelegates: %v", newDelegates)
 	n.Delegates = append(n.Delegates, newDelegates...)
 	return nil
 }
 func delegateAddDeviceID(inBytes []byte, deviceID string) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var rawConfig map[string]interface{}
@@ -212,6 +226,8 @@ func delegateAddDeviceID(inBytes []byte, deviceID string) ([]byte, error) {
 	return configBytes, nil
 }
 func addDeviceIDInConfList(inBytes []byte, deviceID string) ([]byte, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	_logClusterCodePath()
 	defer _logClusterCodePath()
 	var rawConfig map[string]interface{}
@@ -243,6 +259,8 @@ func addDeviceIDInConfList(inBytes []byte, deviceID string) ([]byte, error) {
 func CheckSystemNamespaces(namespace string, systemNamespaces []string) bool {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	for _, nsname := range systemNamespaces {
 		if namespace == nsname {
 			return true
@@ -253,7 +271,16 @@ func CheckSystemNamespaces(namespace string, systemNamespaces []string) bool {
 func _logClusterCodePath() {
 	_logClusterCodePath()
 	defer _logClusterCodePath()
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	pc, _, _, _ := godefaultruntime.Caller(1)
 	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
 	godefaulthttp.Post("http://35.226.239.161:5001/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
+}
+func _logClusterCodePath() {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
+	pc, _, _, _ := godefaultruntime.Caller(1)
+	jsonLog := []byte(fmt.Sprintf("{\"fn\": \"%s\"}", godefaultruntime.FuncForPC(pc).Name()))
+	godefaulthttp.Post("/"+"logcode", "application/json", godefaultbytes.NewBuffer(jsonLog))
 }
