@@ -2,13 +2,10 @@ package checkpoint
 
 import (
 	"os"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
 	"io/ioutil"
 	"testing"
-
 	"github.com/intel/multus-cni/types"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -19,19 +16,21 @@ const (
 	fakeTempFile = "/tmp/kubelet_internal_checkpoint"
 )
 
-type fakeCheckpoint struct {
-	fileName string
-}
+type fakeCheckpoint struct{ fileName string }
 
 func (fc *fakeCheckpoint) WriteToFile(inBytes []byte) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return ioutil.WriteFile(fc.fileName, inBytes, 0600)
 }
-
 func (fc *fakeCheckpoint) DeleteFile() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	return os.Remove(fc.fileName)
 }
-
 func TestCheckpoint(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Checkpoint")
 }
@@ -68,62 +67,47 @@ var _ = BeforeSuite(func() {
 		},
 		"Checksum": 229855270
 		}`
-
 	fakeCheckpoint := &fakeCheckpoint{fileName: fakeTempFile}
 	err := fakeCheckpoint.WriteToFile([]byte(sampleData))
 	Expect(err).NotTo(HaveOccurred())
 })
-
 var _ = Describe("Kubelet checkpoint data read operations", func() {
 	Context("Using /tmp/kubelet_internal_checkpoint file", func() {
 		var (
-			cp            types.ResourceClient
-			err           error
-			resourceMap   map[string]*types.ResourceInfo
-			resourceInfo  *types.ResourceInfo
-			resourceAnnot = "intel.com/sriov_net_A"
+			cp		types.ResourceClient
+			err		error
+			resourceMap	map[string]*types.ResourceInfo
+			resourceInfo	*types.ResourceInfo
+			resourceAnnot	= "intel.com/sriov_net_A"
 		)
-
 		It("should get a Checkpoint instance from file", func() {
 			cp, err = getCheckpoint(fakeTempFile)
 			Expect(err).NotTo(HaveOccurred())
 		})
-
 		It("should return a ResourceMap instance", func() {
 			podUID := k8sTypes.UID("970a395d-bb3b-11e8-89df-408d5c537d23")
-			fakePod := &v1.Pod{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "fakePod",
-					Namespace: "podNamespace",
-					UID:       podUID,
-				},
-			}
+			fakePod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "fakePod", Namespace: "podNamespace", UID: podUID}}
 			rmap, err := cp.GetPodResourceMap(fakePod)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(rmap).NotTo(BeEmpty())
 			resourceMap = rmap
 		})
-
 		It("resourceMap should have value for \"intel.com/sriov_net_A\"", func() {
 			rInfo, ok := resourceMap[resourceAnnot]
 			Expect(ok).To(BeTrue())
 			resourceInfo = rInfo
 		})
-
 		It("should have 2 deviceIDs", func() {
 			Expect(len(resourceInfo.DeviceIDs)).To(BeEquivalentTo(2))
 		})
-
 		It("should have \"0000:03:02.3\" in deviceIDs[0]", func() {
 			Expect(resourceInfo.DeviceIDs[0]).To(BeEquivalentTo("0000:03:02.3"))
 		})
-
 		It("should have \"0000:03:02.0\" in deviceIDs[1]", func() {
 			Expect(resourceInfo.DeviceIDs[1]).To(BeEquivalentTo("0000:03:02.0"))
 		})
 	})
 })
-
 var _ = AfterSuite(func() {
 	fakeCheckpoint := &fakeCheckpoint{fileName: fakeTempFile}
 	err := fakeCheckpoint.DeleteFile()

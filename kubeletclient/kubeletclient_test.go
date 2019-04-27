@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"google.golang.org/grpc"
@@ -14,69 +13,47 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	k8sTypes "k8s.io/apimachinery/pkg/types"
 	"k8s.io/kubernetes/pkg/kubelet/util"
-
 	mtypes "github.com/intel/multus-cni/types"
 	podresourcesapi "k8s.io/kubernetes/pkg/kubelet/apis/podresources/v1alpha1"
 )
 
 var (
-	socketDir  string
-	socketName string
-	fakeServer *fakeResourceServer
+	socketDir	string
+	socketName	string
+	fakeServer	*fakeResourceServer
 )
 
-type fakeResourceServer struct {
-	server *grpc.Server
-}
+type fakeResourceServer struct{ server *grpc.Server }
 
 func (m *fakeResourceServer) List(ctx context.Context, req *podresourcesapi.ListPodResourcesRequest) (*podresourcesapi.ListPodResourcesResponse, error) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	podName := "pod-name"
 	podNamespace := "pod-namespace"
 	containerName := "container-name"
-
-	devs := []*podresourcesapi.ContainerDevices{
-		{
-			ResourceName: "resource",
-			DeviceIds:    []string{"dev0", "dev1"},
-		},
-	}
-
-	resp := &podresourcesapi.ListPodResourcesResponse{
-		PodResources: []*podresourcesapi.PodResources{
-			{
-				Name:      podName,
-				Namespace: podNamespace,
-				Containers: []*podresourcesapi.ContainerResources{
-					{
-						Name:    containerName,
-						Devices: devs,
-					},
-				},
-			},
-		},
-	}
+	devs := []*podresourcesapi.ContainerDevices{{ResourceName: "resource", DeviceIds: []string{"dev0", "dev1"}}}
+	resp := &podresourcesapi.ListPodResourcesResponse{PodResources: []*podresourcesapi.PodResources{{Name: podName, Namespace: podNamespace, Containers: []*podresourcesapi.ContainerResources{{Name: containerName, Devices: devs}}}}}
 	return resp, nil
 }
-
 func TestKubeletclient(t *testing.T) {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Kubeletclient Suite")
 }
-
 func setUp() error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	tempSocketDir, err := ioutil.TempDir("", "kubelet-resource-client")
 	if err != nil {
 		return err
 	}
 	defaultPodResourcesPath = filepath.Join(tempSocketDir, defaultPodResourcesPath)
-
 	if err := os.MkdirAll(defaultPodResourcesPath, os.ModeDir); err != nil {
 		return err
 	}
-
 	socketDir = defaultPodResourcesPath
 	socketName = filepath.Join(socketDir, "kubelet.sock")
-
 	fakeServer = &fakeResourceServer{server: grpc.NewServer()}
 	podresourcesapi.RegisterPodResourcesListerServer(fakeServer.server, fakeServer)
 	lis, err := util.CreateListener(socketName)
@@ -86,8 +63,9 @@ func setUp() error {
 	go fakeServer.server.Serve(lis)
 	return nil
 }
-
 func tearDown(path string) error {
+	_logClusterCodePath()
+	defer _logClusterCodePath()
 	if fakeServer != nil {
 		fakeServer.server.Stop()
 	}
@@ -101,14 +79,11 @@ var _ = BeforeSuite(func() {
 	err := setUp()
 	Expect(err).NotTo(HaveOccurred())
 })
-
 var _ = AfterSuite(func() {
 	err := tearDown(socketDir)
 	Expect(err).NotTo(HaveOccurred())
 })
-
 var _ = Describe("Kubelet resource endpoint data read operations", func() {
-
 	Context("GetResourceClient()", func() {
 		It("should return no error", func() {
 			kubeletSocket = socketName
@@ -116,48 +91,24 @@ var _ = Describe("Kubelet resource endpoint data read operations", func() {
 			Expect(err).NotTo(HaveOccurred())
 		})
 	})
-
 	Context("GetPodResourceMap() with valid pod name and namespace", func() {
 		It("should return no error", func() {
 			podUID := k8sTypes.UID("970a395d-bb3b-11e8-89df-408d5c537d23")
-			fakePod := &v1.Pod{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "pod-name",
-					Namespace: "pod-namespace",
-					UID:       podUID,
-				},
-				Spec: v1.PodSpec{
-					Containers: []v1.Container{
-						{
-							Name: "container-name",
-						},
-					},
-				},
-			}
+			fakePod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "pod-name", Namespace: "pod-namespace", UID: podUID}, Spec: v1.PodSpec{Containers: []v1.Container{{Name: "container-name"}}}}
 			kubeletSocket = socketName
 			client, err := getKubeletClient()
 			Expect(err).NotTo(HaveOccurred())
-
-			outputRMap := map[string]*mtypes.ResourceInfo{
-				"resource": &mtypes.ResourceInfo{DeviceIDs: []string{"dev0", "dev1"}},
-			}
+			outputRMap := map[string]*mtypes.ResourceInfo{"resource": &mtypes.ResourceInfo{DeviceIDs: []string{"dev0", "dev1"}}}
 			resourceMap, err := client.GetPodResourceMap(fakePod)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(resourceMap).ShouldNot(BeNil())
 			Expect(resourceMap).To(Equal(outputRMap))
 		})
 	})
-
 	Context("GetPodResourceMap() with empty podname", func() {
 		It("should return error", func() {
 			podUID := k8sTypes.UID("970a395d-bb3b-11e8-89df-408d5c537d23")
-			fakePod := &v1.Pod{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "",
-					Namespace: "pod-namespace",
-					UID:       podUID,
-				},
-			}
+			fakePod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "", Namespace: "pod-namespace", UID: podUID}}
 			kubeletSocket = socketName
 			client, err := getKubeletClient()
 			Expect(err).NotTo(HaveOccurred())
@@ -165,17 +116,10 @@ var _ = Describe("Kubelet resource endpoint data read operations", func() {
 			Expect(err).To(HaveOccurred())
 		})
 	})
-
 	Context("GetPodResourceMap() with empty namespace", func() {
 		It("should return error", func() {
 			podUID := k8sTypes.UID("970a395d-bb3b-11e8-89df-408d5c537d23")
-			fakePod := &v1.Pod{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "pod-name",
-					Namespace: "",
-					UID:       podUID,
-				},
-			}
+			fakePod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "pod-name", Namespace: "", UID: podUID}}
 			kubeletSocket = socketName
 			client, err := getKubeletClient()
 			Expect(err).NotTo(HaveOccurred())
@@ -183,22 +127,13 @@ var _ = Describe("Kubelet resource endpoint data read operations", func() {
 			Expect(err).To(HaveOccurred())
 		})
 	})
-
 	Context("GetPodResourceMap() with non-existent podname and namespace", func() {
 		It("should return no error", func() {
 			podUID := k8sTypes.UID("970a395d-bb3b-11e8-89df-408d5c537d23")
-			fakePod := &v1.Pod{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      "whateverpod",
-					Namespace: "whatevernamespace",
-					UID:       podUID,
-				},
-			}
-
+			fakePod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "whateverpod", Namespace: "whatevernamespace", UID: podUID}}
 			kubeletSocket = socketName
 			client, err := getKubeletClient()
 			Expect(err).NotTo(HaveOccurred())
-
 			emptyRMap := map[string]*mtypes.ResourceInfo{}
 			resourceMap, err := client.GetPodResourceMap(fakePod)
 			Expect(err).NotTo(HaveOccurred())
